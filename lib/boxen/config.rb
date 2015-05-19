@@ -46,20 +46,21 @@ module Boxen
 
     def self.save(config)
       attrs = {
-        :email        => config.email,
-        :fde          => config.fde?,
-        :homedir      => config.homedir,
-        :login        => config.login,
-        :name         => config.name,
-        :puppetdir    => config.puppetdir,
-        :repodir      => config.repodir,
-        :reponame     => config.reponame,
-        :ghurl        => config.ghurl,
-        :srcdir       => config.srcdir,
-        :user         => config.user,
-        :repotemplate => config.repotemplate,
-        :s3host       => config.s3host,
-        :s3bucket     => config.s3bucket
+        :email         => config.email,
+        :fde           => config.fde?,
+        :homedir       => config.homedir,
+        :login         => config.login,
+        :name          => config.name,
+        :puppetdir     => config.puppetdir,
+        :repodir       => config.repodir,
+        :reponame      => config.reponame,
+        :issuereponame => config.issuereponame,
+        :ghurl         => config.ghurl,
+        :srcdir        => config.srcdir,
+        :user          => config.user,
+        :repotemplate  => config.repotemplate,
+        :s3host        => config.s3host,
+        :s3bucket      => config.s3bucket
       }
 
       file = "#{config.homedir}/config/boxen/defaults.json"
@@ -222,8 +223,8 @@ module Boxen
 
     attr_writer :repodir
 
-    # The repo on GitHub to use for error reports and automatic
-    # updates, in `owner/repo` format. Default is the `origin` of a
+    # The repo on GitHub to use for  automatic updates
+    # in `owner/repo` format. Default is the `origin` of a
     # Git repo in `repodir`, if it exists and points at GitHub.
     # Respects the `BOXEN_REPO_NAME` environment variable.
 
@@ -244,6 +245,18 @@ module Boxen
     end
 
     attr_writer :reponame
+
+    # The repo on GitHub to use for error reports and automatic
+    # updates, in `owner/repo` format. Default is the `origin` of a
+    # Git repo in `repodir`, if it exists and points at GitHub.
+    # Respects the `BOXEN_REPO_NAME` environment variable.
+
+    def issuereponame
+      override = @issuereponame || ENV["BOXEN_ISSUE_REPO_NAME"]
+      return override unless override.nil?
+    end
+
+    attr_writer :issuereponame
 
     # GitHub location (public or GitHub Enterprise)
 

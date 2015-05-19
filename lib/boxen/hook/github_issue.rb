@@ -14,14 +14,14 @@ module Boxen
         if result.success?
           close_failures
         else
-          warn "Sorry! Creating an issue on #{config.reponame}."
+          warn "Sorry! Creating an issue on #{config.issuereponame}."
           record_failure
         end
       end
 
       def compare_url
-        return unless config.reponame
-        "#{config.ghurl}/#{config.reponame}/compare/#{checkout.sha}...master"
+        return unless config.issuereponame
+        "#{config.ghurl}/#{config.issuereponame}/compare/#{checkout.sha}...master"
       end
 
       def hostname
@@ -44,7 +44,7 @@ module Boxen
         return unless issues?
 
         title = "Failed for #{config.user}"
-        config.api.create_issue(config.reponame, title, failure_details,
+        config.api.create_issue(config.issuereponame, title, failure_details,
           :labels => [failure_label])
       end
 
@@ -53,15 +53,15 @@ module Boxen
 
         comment = "Succeeded at version #{checkout.sha}."
         failures.each do |issue|
-          config.api.add_comment(config.reponame, issue.number, comment)
-          config.api.close_issue(config.reponame, issue.number)
+          config.api.add_comment(config.issuereponame, issue.number, comment)
+          config.api.close_issue(config.issuereponame, issue.number)
         end
       end
 
       def failures
         return [] unless issues?
 
-        issues = config.api.list_issues(config.reponame, :state => 'open',
+        issues = config.api.list_issues(config.issuereponame, :state => 'open',
           :labels => failure_label, :creator => config.login)
         issues.reject! {|i| i.labels.collect(&:name).include?(ongoing_label)}
         issues
@@ -103,10 +103,10 @@ module Boxen
       attr_writer :ongoing_label
 
       def issues?
-        return unless config.reponame
-        return if config.reponame == 'boxen/our-boxen' && !config.enterprise
+        return unless config.issuereponame
+        return if config.issuereponame == 'boxen/our-boxen' && !config.enterprise?
 
-        config.api.repository(config.reponame).has_issues
+        config.api.repository(config.issuereponame).has_issues
       end
 
       private
