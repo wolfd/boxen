@@ -44,4 +44,5 @@ module Boxen
 end
 
 require "boxen/hook/github_issue"
+require "boxen/hook/opentsdb"
 require "boxen/hook/web"

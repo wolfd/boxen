@@ -3,7 +3,7 @@ require "opentsdb"
 
 module Boxen
   class Hook
-    class OpenTSDB < Hook
+    class TSDB < Hook
       def perform?
         enabled?
       end
@@ -27,9 +27,6 @@ module Boxen
 
         boxen_run = { :metric => 'boxen.runs', :value => 1, :timestamp => Time.now.to_i, :tags => payload }
         @client.put(boxen_run)
-
-        require 'pp'
-        pp boxen_run
       end
 
       def required_environment_variables
@@ -39,4 +36,4 @@ module Boxen
   end
 end
 
-Boxen::Hook.register Boxen::Hook::OpenTSDB
+Boxen::Hook.register Boxen::Hook::TSDB
