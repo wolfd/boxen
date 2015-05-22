@@ -25,7 +25,7 @@ module Boxen
 
         @client = OpenTSDB::Client.new({:hostname => host, :port => port})
 
-        boxen_run = { :metric => 'boxen.runs', :value => 1, :timestamp => Time.now.to_i, :tags => payload }
+        boxen_run = { :metric => 'boxen.runs', :value => 1, :timestamp => Time.now.utc.to_i, :tags => payload }
         @client.put(boxen_run)
       end
 
