@@ -22,11 +22,14 @@ module Boxen
       def send_opentsdb_data(payload)
         host = ENV['BOXEN_OPENTSDB_HOST']
         port = ENV['BOXEN_OPENTSDB_PORT'].to_i
+        begin
+          @client = OpenTSDB::Client.new({:hostname => host, :port => port})
 
-        @client = OpenTSDB::Client.new({:hostname => host, :port => port})
-
-        boxen_run = { :metric => 'boxen.runs', :value => 1, :timestamp => Time.now.utc.to_i, :tags => payload }
-        @client.put(boxen_run)
+          boxen_run = { :metric => 'boxen.runs', :value => 1, :timestamp => Time.now.utc.to_i, :tags => payload }
+          @client.put(boxen_run)
+        rescue Exception => e
+          # Silently fail, this isn't crucial
+        end
       end
 
       def required_environment_variables
